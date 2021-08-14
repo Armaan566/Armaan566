@@ -1,0 +1,39 @@
+#!/bin/python
+import os
+import sys
+
+def run(cname,fname):
+    a=os.get_terminal_size()
+    msg = "Working"
+    print(msg.center(a[0]-len(msg)))
+    print("")
+    os.system(f"ecj {fname}")
+    os.system(f"dx --dex --output=Jtemp.dex {cname}.class")
+    os.system(f"dalvikvm -cp Jtemp.dex {cname}")
+    os.remove('Jtemp.dex')
+    os.remove(f"{cname}.class")
+    print("Done")
+def splitrun(fileName):
+    className = ''
+    with open(fileName,'r') as f:
+        f = f.read()
+        ci = f.find('class')
+        ci = ci + 5
+        while True:
+            if f[ci] == '{':
+                break
+            else:
+                className = className + f[ci]
+                ci = ci + 1
+    className = className.split(' ')
+    
+    for i in className:
+        if i :
+            className = i
+    run(className,fileName)
+try:
+    fname = sys.argv[1]
+    splitrun(fname)
+except IndexError:
+    print(f"Use : {sys.argv[0]} fileName.java")
+
